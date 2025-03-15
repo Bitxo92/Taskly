@@ -5,43 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+
+    <!-- 50dp Spacer between AppBar and RecyclerView -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!-- AppBar con Material Design -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:title="Lista de Tareas"
-            android:titleTextColor="@android:color/white"
-            app:popupTheme="@style/ThemeOverlay.Material3.Light" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- RecyclerView para mostrar tareas -->
+    <!-- RecyclerView to display tasks -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
         android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:padding="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!-- Floating Action Button (FAB) para agregar tarea -->
+    <!-- Floating Action Button (FAB) to add a task -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add"
         android:contentDescription="Agregar Tarea"
+        android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/teal_700"
         app:layout_anchor="@id/recyclerView"
         app:layout_anchorGravity="bottom|end" />

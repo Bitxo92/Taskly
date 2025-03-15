@@ -6,24 +6,41 @@
     android:padding="16dp"
     android:orientation="vertical">
 
+    <!-- 200dp Spacer at the Top -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Título de la tarea">
+        android:hint="Título de la tarea"
+        app:startIconDrawable="@drawable/ic_title"
+        app:startIconTint="@color/teal_700"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Descripción">
+        android:hint="Descripción"
+        app:startIconDrawable="@drawable/ic_description"
+        app:startIconTint="@color/teal_700"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -32,7 +49,13 @@
         android:layout_height="wrap_content"
         android:text="Seleccionar fecha y hora"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:padding="8dp"/>
+        android:padding="16dp"
+        android:drawableStart="@drawable/ic_date_range"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/teal_700"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"/>
 
     <Button
         android:id="@+id/buttonPickDateTime"
@@ -40,7 +63,12 @@
         android:layout_height="wrap_content"
         android:text="Elegir Fecha y Hora"
         android:backgroundTint="@color/teal_700"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:drawableStart="@drawable/ic_date_range"
+        android:drawablePadding="8dp"
+        android:drawableTint="@android:color/white"
+        android:padding="16dp"
+        android:layout_marginTop="8dp"/>
 
     <Button
         android:id="@+id/buttonSave"
@@ -49,5 +77,9 @@
         android:text="Guardar"
         android:backgroundTint="@color/primary"
         android:textColor="@android:color/white"
+        android:drawableStart="@drawable/ic_save"
+        android:drawablePadding="8dp"
+        android:drawableTint="@android:color/white"
+        android:padding="16dp"
         android:layout_marginTop="16dp"/>
 </LinearLayout>
