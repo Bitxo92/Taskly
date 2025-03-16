@@ -24,6 +24,20 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <!-- TextView to show when there are no tasks -->
+    <TextView
+        android:id="@+id/noTasksText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No activities \nprogrammed"
+        android:textSize="30dp"
+        android:layout_gravity="center"
+        android:textColor="@color/teal_700"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:gravity="center" />
+
     <!-- Floating Action Button (FAB) to add a task -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_task"

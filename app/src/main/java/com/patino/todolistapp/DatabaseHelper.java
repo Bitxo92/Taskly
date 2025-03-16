@@ -74,6 +74,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_TASKS, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
         db.close();
     }
+
+    public void updateTask(int id, String title, String description, long timestamp) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TITLE, title);
+        values.put(COLUMN_DESCRIPTION, description);
+        values.put(COLUMN_TIMESTAMP, timestamp);
+        db.update(TABLE_TASKS, values, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+        db.close();
+    }
 }
 
 

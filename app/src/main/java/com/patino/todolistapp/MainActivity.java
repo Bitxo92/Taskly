@@ -5,52 +5,74 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.Manifest;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTaskLongClickListener {
     private RecyclerView recyclerView;
     private TaskAdapter adapter;
     private DatabaseHelper databaseHelper;
     private static final int ADD_TASK_REQUEST = 1;
     private static final int TASK_REMINDER_REQUEST_CODE = 1001;
+    private TextView noTasksText;  // Move the declaration here
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Enable edge-to-edge UI
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        // Initialize noTasksText after setContentView
+        noTasksText = findViewById(R.id.noTasksText);
 
-        // Apply padding to respect system bars
-        View rootView = findViewById(android.R.id.content);
-        rootView.setOnApplyWindowInsetsListener((v, insets) -> {
-            v.setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
-            return insets.consumeSystemWindowInsets();
-        });
+        // Request notification permission for Android 13 and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
 
+        // Check for exact alarm permission for Android 12 and above
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+                Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                startActivity(intent);
+            }
+        }
+
+        // Initialize RecyclerView and adapter
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         databaseHelper = new DatabaseHelper(this);
 
+        // Load tasks from the database
         loadTasks();
 
+        // Set up FloatingActionButton to add a new task
         FloatingActionButton fab = findViewById(R.id.fab_add_task);
         fab.setOnClickListener(view -> startActivityForResult(new Intent(this, AddTaskActivity.class), ADD_TASK_REQUEST));
 
+        // Enable swipe-to-delete feature
         enableSwipeToDelete();
     }
 
@@ -58,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
-            loadTasks();
+            loadTasks(); // Refresh the task list
 
             // Check if the intent contains a task time (this assumes you're sending the task time from AddTaskActivity)
             if (data != null) {
@@ -73,12 +95,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void loadTasks() {
         List<Task> tasks = databaseHelper.getAllTasks();
         Collections.sort(tasks, (t1, t2) -> Long.compare(t1.getTimestamp(), t2.getTimestamp()));
-        adapter = new TaskAdapter(tasks, databaseHelper);
+
+        // Initialize the adapter with the task list and this activity as the long-click listener
+        adapter = new TaskAdapter(tasks, databaseHelper, this);
         recyclerView.setAdapter(adapter);
+
+        // Check if there are no tasks and show the "No activities programmed" message
+        if (adapter.getItemCount() == 0) {
+            noTasksText.setVisibility(View.VISIBLE);  // Show "No activities programmed"
+        } else {
+            noTasksText.setVisibility(View.GONE);  // Hide the message
+        }
     }
 
     private void enableSwipeToDelete() {
@@ -94,6 +124,11 @@ public class MainActivity extends AppCompatActivity {
                 Task task = adapter.getTaskAt(position);
                 databaseHelper.deleteTask(task.getId());
                 adapter.removeTask(position);
+
+                // After removal, check if the list is empty and show/hide the message
+                if (adapter.getItemCount() == 0) {
+                    noTasksText.setVisibility(View.VISIBLE);  // Show "No activities programmed"
+                }
             }
         };
         new ItemTouchHelper(callback).attachToRecyclerView(recyclerView);
@@ -104,12 +139,9 @@ public class MainActivity extends AppCompatActivity {
     public void scheduleTaskReminder(long taskTime, String taskTitle) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-
         long reminderTime = taskTime - 10 * 60 * 1000; // 10 minutes before (in milliseconds)
 
-
         Log.d("TaskReminder", "Task time: " + taskTime + ", Reminder time: " + reminderTime);
-
 
         if (reminderTime <= System.currentTimeMillis()) {
             Log.d("TaskReminder", "Reminder time is in the past. Cannot schedule.");
@@ -121,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("taskTitle", taskTitle);
         intent.putExtra("taskTime", taskTime);
 
-       //for BroadcastReceiver to be triggered
+        // Create a PendingIntent
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this,
                 TASK_REMINDER_REQUEST_CODE,
@@ -134,5 +166,17 @@ public class MainActivity extends AppCompatActivity {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent);
             Log.d("TaskReminder", "Alarm set for: " + reminderTime);
         }
+    }
+
+    // Implement the long-click listener
+    @Override
+    public void onTaskLongClick(Task task) {
+        // Open EditTaskActivity and pass the task data
+        Intent intent = new Intent(this, EditTaskActivity.class);
+        intent.putExtra("taskId", task.getId()); // Pass the task ID
+        intent.putExtra("taskTitle", task.getTitle()); // Pass the task title
+        intent.putExtra("taskDescription", task.getDescription()); // Pass the task description
+        intent.putExtra("taskTimestamp", task.getTimestamp()); // Pass the task timestamp
+        startActivityForResult(intent, ADD_TASK_REQUEST); // Use the same request code as adding a task
     }
 }
