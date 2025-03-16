@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="holo_orange_dark">#FFA500</color> <!-- Yellow for warning -->
+    <color name="holo_red_dark">#FF0000</color> <!-- Red for overdue -->
 </resources>

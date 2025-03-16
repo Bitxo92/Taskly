@@ -1,10 +1,13 @@
 package com.patino.todolistapp;
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -42,13 +45,30 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.description.setText(task.getDescription());
         holder.dateTime.setText(dateFormat.format(task.getTimestamp()));
 
-        // Set long-click listener
-        holder.itemView.setOnLongClickListener(v -> {
-            if (longClickListener != null) {
-                longClickListener.onTaskLongClick(task); // Trigger the long-click listener
-            }
-            return true; // Return true to indicate the event is consumed
-        });
+        long currentTime = System.currentTimeMillis();
+        long taskTime = task.getTimestamp();
+        long timeDifference = taskTime - currentTime;
+
+        // Reset visibility and styles
+        holder.iconWarning.setVisibility(View.GONE);
+        holder.iconClose.setVisibility(View.GONE);
+        holder.iconOntime.setVisibility(View.GONE);
+        holder.title.setPaintFlags(holder.title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG)); // Remove strikethrough
+        holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.black)); // Reset text color
+
+        if (timeDifference <= 0) {
+            // Task time has passed
+            holder.iconClose.setVisibility(View.VISIBLE);
+            holder.title.setPaintFlags(holder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG); // Add strikethrough
+            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.holo_red_dark)); // Red text
+        } else if (timeDifference <= 10 * 60 * 1000) {
+            // 10 minutes or less remaining
+            holder.iconWarning.setVisibility(View.VISIBLE);
+            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.holo_orange_dark)); // Yellow text
+        }else{
+            holder.iconOntime.setVisibility(View.VISIBLE);
+            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.holo_green_dark)); // Green text
+        }
     }
 
     @Override
@@ -67,16 +87,19 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         notifyItemRemoved(position);
     }
 
-    // ViewHolder class
     static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView title, description, dateTime;
+        ImageView iconWarning, iconClose,iconOntime;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
-            // Initialize views
             title = itemView.findViewById(R.id.task_title);
             description = itemView.findViewById(R.id.task_description);
             dateTime = itemView.findViewById(R.id.task_datetime);
+            iconWarning = itemView.findViewById(R.id.icon_warning);
+            iconClose = itemView.findViewById(R.id.icon_close);
+            iconOntime = itemView.findViewById(R.id.icon_ontime);
+
         }
     }
 

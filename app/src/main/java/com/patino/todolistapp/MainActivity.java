@@ -14,6 +14,7 @@ import android.view.View;
 import android.Manifest;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
     private void enableSwipeToDelete() {
         ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
@@ -134,6 +135,11 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 Task task = adapter.getTaskAt(position);
+
+                // Cancel the alarm for the deleted task
+                cancelTaskReminder(task.getTimestamp());
+
+                // Delete the task from the database
                 databaseHelper.deleteTask(task.getId());
                 adapter.removeTask(position);
 
@@ -144,6 +150,28 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
             }
         };
         new ItemTouchHelper(callback).attachToRecyclerView(recyclerView);
+    }
+
+    // Method to cancel the task reminder alarm
+    public void cancelTaskReminder(long taskTime) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        // Create an intent for the broadcast receiver
+        Intent intent = new Intent(this, TaskReminderReceiver.class);
+
+        // Create a PendingIntent with the same request code used to schedule the alarm
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                (int) taskTime, // Use taskTime as the request code to ensure uniqueness
+                intent,
+                PendingIntent.FLAG_IMMUTABLE // Use FLAG_IMMUTABLE for security
+        );
+
+        // Cancel the alarm
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+            Log.d("TaskReminder", "Alarm canceled for task time: " + taskTime);
+        }
     }
 
     // In MainActivity.java
