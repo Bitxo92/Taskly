@@ -69,6 +69,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             holder.iconOntime.setVisibility(View.VISIBLE);
             holder.title.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.holo_green_dark)); // Green text
         }
+
+
+        // Set long-click listener
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                int position = holder.getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    Task task = taskList.get(position);
+                    longClickListener.onTaskLongClick(task);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
