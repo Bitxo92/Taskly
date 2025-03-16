@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
     private DatabaseHelper databaseHelper;
     private static final int ADD_TASK_REQUEST = 1;
     private static final int TASK_REMINDER_REQUEST_CODE = 1001;
-    private TextView noTasksText;  // Move the declaration here
+    private TextView noTasksText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +65,9 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         databaseHelper = new DatabaseHelper(this);
 
-        // Load tasks from the database
+        // Load tasks and reschedule alarms
         loadTasks();
+        rescheduleAlarmsForAllTasks();
 
         // Set up FloatingActionButton to add a new task
         FloatingActionButton fab = findViewById(R.id.fab_add_task);
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
 
                 // Call the scheduleTaskReminder method to schedule the task reminder
                 if (taskTime > 0 && taskTitle != null) {
-                    scheduleTaskReminder(taskTime, taskTitle);
+                    scheduleTaskReminder(this,taskTime, taskTitle);
                 }
             }
         }
@@ -108,6 +109,17 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
             noTasksText.setVisibility(View.VISIBLE);  // Show "No activities programmed"
         } else {
             noTasksText.setVisibility(View.GONE);  // Hide the message
+        }
+    }
+
+    private void rescheduleAlarmsForAllTasks() {
+        List<Task> tasks = databaseHelper.getAllTasks();
+        for (Task task : tasks) {
+            long taskTime = task.getTimestamp();
+            String taskTitle = task.getTitle();
+            if (taskTime > System.currentTimeMillis()) { // Only schedule alarms for future tasks
+                scheduleTaskReminder(this,taskTime, taskTitle);
+            }
         }
     }
 
@@ -134,10 +146,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         new ItemTouchHelper(callback).attachToRecyclerView(recyclerView);
     }
 
-    // Method to schedule the task reminder alarm
+    // In MainActivity.java
     @SuppressLint("ScheduleExactAlarm")
-    public void scheduleTaskReminder(long taskTime, String taskTitle) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    public static void scheduleTaskReminder(Context context, long taskTime, String taskTitle) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         long reminderTime = taskTime - 10 * 60 * 1000; // 10 minutes before (in milliseconds)
 
@@ -149,21 +161,25 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         }
 
         // Create an intent for the broadcast receiver
-        Intent intent = new Intent(this, TaskReminderReceiver.class);
+        Intent intent = new Intent(context, TaskReminderReceiver.class);
         intent.putExtra("taskTitle", taskTitle);
         intent.putExtra("taskTime", taskTime);
 
         // Create a PendingIntent
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this,
-                TASK_REMINDER_REQUEST_CODE,
+                context,
+                (int) taskTime, // Use taskTime as the request code to ensure uniqueness
                 intent,
-                PendingIntent.FLAG_IMMUTABLE // Ensure we use FLAG_IMMUTABLE for security
+                PendingIntent.FLAG_IMMUTABLE // Use FLAG_IMMUTABLE for security
         );
 
         // Schedule the alarm
         if (alarmManager != null) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent);
+            } else {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent);
+            }
             Log.d("TaskReminder", "Alarm set for: " + reminderTime);
         }
     }

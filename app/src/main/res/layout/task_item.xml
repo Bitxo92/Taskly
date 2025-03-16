@@ -34,6 +34,6 @@
         android:layout_height="wrap_content"
         android:text="Fecha y Hora"
         android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="#64AABC"
         android:layout_marginTop="4dp"/>
 </LinearLayout>
