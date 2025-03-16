@@ -6,10 +6,19 @@
     android:padding="16dp"
     android:orientation="vertical">
 
-    <!-- 200dp Spacer at the Top -->
+    <!-- 200dp Spacer-->
     <View
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="50dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="Formulario de tarea"
+        android:textAlignment="center"
+        android:textSize="20sp"
+       android:layout_marginBottom="10dp"
+        android:textColor="@color/teal_700"
+        android:textStyle="bold"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -26,6 +35,9 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"/>
     </com.google.android.material.textfield.TextInputLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -42,6 +54,9 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"/>
     </com.google.android.material.textfield.TextInputLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
 
     <TextView
         android:id="@+id/textViewDateTime"
@@ -70,16 +85,35 @@
         android:padding="16dp"
         android:layout_marginTop="8dp"/>
 
-    <Button
-        android:id="@+id/buttonSave"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Guardar"
-        android:backgroundTint="@color/primary"
-        android:textColor="@android:color/white"
-        android:drawableStart="@drawable/ic_save"
-        android:drawablePadding="8dp"
-        android:drawableTint="@android:color/white"
+        android:layout_height="match_parent"
         android:padding="16dp"
-        android:layout_marginTop="16dp"/>
+        android:orientation="vertical">
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@android:color/white"
+            android:icon="@drawable/ic_save"
+            android:iconTint="@android:color/white"
+            app:iconGravity="textStart"
+
+            app:iconPadding="8dp"
+            android:padding="16dp"
+            android:layout_marginTop="16dp"/>
+
+
+    </LinearLayout>
+
 </LinearLayout>

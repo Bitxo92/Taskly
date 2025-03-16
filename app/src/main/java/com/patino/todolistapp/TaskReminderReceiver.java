@@ -18,7 +18,7 @@ public class TaskReminderReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Obtener la tarea de la intención (puedes incluir datos como el título de la tarea)
+        // Obtener la tarea de la intención
         String taskTitle = intent.getStringExtra("taskTitle");
         long taskTime = intent.getLongExtra("taskTime", 0);
 
