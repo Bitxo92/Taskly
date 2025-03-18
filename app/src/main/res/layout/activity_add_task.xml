@@ -1,119 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:orientation="vertical">
+    android:background="@color/black">
 
-    <!-- 200dp Spacer-->
-    <View
+    <!-- AppBarLayout for the Header -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:text="Formulario de tarea"
-        android:textAlignment="center"
-        android:textSize="20sp"
-       android:layout_marginBottom="10dp"
-        android:textColor="@color/teal_700"
-        android:textStyle="bold"/>
+        android:layout_height="100dp"
+        android:background="@color/black">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Título de la tarea"
-        app:startIconDrawable="@drawable/ic_title"
-        app:startIconTint="@color/teal_700"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextTitle"
+        <!-- Custom Header using LinearLayout -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"/>
-    </com.google.android.material.textfield.TextInputLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Descripción"
-        app:startIconDrawable="@drawable/ic_description"
-        app:startIconTint="@color/teal_700"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"/>
-    </com.google.android.material.textfield.TextInputLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
+            <!-- Icon -->
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/ic_task_icon"
+                android:layout_marginEnd="8dp"
+                app:tint="@color/teal_700" />
 
-    <TextView
-        android:id="@+id/textViewDateTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Seleccionar fecha y hora"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:padding="16dp"
-        android:drawableStart="@drawable/ic_date_range"
-        android:drawablePadding="8dp"
-        android:drawableTint="@color/teal_700"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"/>
+            <!-- Catchy Text -->
+            <TextView
+                android:id="@+id/header_text"
+                android:layout_width="182dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bangers"
+                android:text="Plan Your Day!"
+                android:textColor="@color/teal_700"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <Button
-        android:id="@+id/buttonPickDateTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Elegir Fecha y Hora"
-        android:backgroundTint="@color/teal_700"
-        android:textColor="@android:color/white"
-        android:drawableStart="@drawable/ic_date_range"
-        android:drawablePadding="8dp"
-        android:drawableTint="@android:color/white"
-        android:padding="16dp"
-        android:layout_marginTop="8dp"/>
-
-
+    <!-- Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:padding="16dp"
-        android:orientation="vertical">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
+        <!-- Spacer -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="20dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonSave"
+        <!-- Task Title Input -->
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Guardar"
-            android:backgroundTint="@color/teal_700"
-            android:textColor="@android:color/white"
-            android:icon="@drawable/ic_save"
-            android:iconTint="@android:color/white"
-            app:iconGravity="textStart"
+            android:hint="Task Title"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:startIconDrawable="@drawable/ic_title"
+            app:startIconTint="@color/teal_700">
 
-            app:iconPadding="8dp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <!-- Task Description Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:startIconDrawable="@drawable/ic_description"
+            app:startIconTint="@color/teal_700">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <!-- Date and Time Picker -->
+        <TextView
+            android:id="@+id/textViewDateTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="false"
+            android:textColor="@color/white"
+            android:drawableStart="@drawable/ic_date_range"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/teal_700"
+            android:focusable="false"
             android:padding="16dp"
-            android:layout_marginTop="16dp"/>
+            android:text="Schedule Event"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
+        <!-- Date and Time Picker Button -->
+        <Button
+            android:id="@+id/buttonPickDateTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/teal_700"
+            android:drawableStart="@drawable/ic_date_range"
+            android:drawablePadding="8dp"
+            android:drawableTint="@android:color/white"
+            android:padding="16dp"
+            android:textSize="24dp"
+            android:fontFamily="@font/bangers"
+            android:text="Schedule Event"
+            android:textColor="@android:color/white" />
 
+        <!-- Save Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/teal_700"
+                android:icon="@drawable/ic_save"
+                android:iconTint="@android:color/white"
+                android:padding="16dp"
+                android:textSize="24dp"
+                android:text="SAVE"
+                android:fontFamily="@font/bangers"
+                android:textColor="@android:color/white"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp" />
+        </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.Manifest;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,15 +35,31 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
     private DatabaseHelper databaseHelper;
     private static final int ADD_TASK_REQUEST = 1;
     private static final int TASK_REMINDER_REQUEST_CODE = 1001;
-    private TextView noTasksText;
+    private LinearLayout noTasksContainer; // Updated to handle the entire LinearLayout
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize noTasksText after setContentView
-        noTasksText = findViewById(R.id.noTasksText);
+        // Initialize views
+        noTasksContainer = findViewById(R.id.noTasksContainer); // Initialize the LinearLayout
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Initialize database helper
+        databaseHelper = new DatabaseHelper(this);
+
+        // Load tasks and reschedule alarms
+        loadTasks();
+        rescheduleAlarmsForAllTasks();
+
+        // Set up FloatingActionButton to add a new task
+        FloatingActionButton fab = findViewById(R.id.fab_add_task);
+        fab.setOnClickListener(view -> startActivityForResult(new Intent(this, AddTaskActivity.class), ADD_TASK_REQUEST));
+
+        // Enable swipe-to-delete feature
+        enableSwipeToDelete();
 
         // Request notification permission for Android 13 and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -60,22 +76,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
                 startActivity(intent);
             }
         }
-
-        // Initialize RecyclerView and adapter
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        databaseHelper = new DatabaseHelper(this);
-
-        // Load tasks and reschedule alarms
-        loadTasks();
-        rescheduleAlarmsForAllTasks();
-
-        // Set up FloatingActionButton to add a new task
-        FloatingActionButton fab = findViewById(R.id.fab_add_task);
-        fab.setOnClickListener(view -> startActivityForResult(new Intent(this, AddTaskActivity.class), ADD_TASK_REQUEST));
-
-        // Enable swipe-to-delete feature
-        enableSwipeToDelete();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
 
                 // Call the scheduleTaskReminder method to schedule the task reminder
                 if (taskTime > 0 && taskTitle != null) {
-                    scheduleTaskReminder(this,taskTime, taskTitle);
+                    scheduleTaskReminder(this, taskTime, taskTitle);
                 }
             }
         }
@@ -105,11 +105,11 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         adapter = new TaskAdapter(tasks, databaseHelper, this);
         recyclerView.setAdapter(adapter);
 
-        // Check if there are no tasks and show the "No activities programmed" message
+        // Check if there are no tasks and show/hide the noTasksContainer
         if (adapter.getItemCount() == 0) {
-            noTasksText.setVisibility(View.VISIBLE);  // Show "No activities programmed"
+            noTasksContainer.setVisibility(View.VISIBLE); // Show the entire LinearLayout
         } else {
-            noTasksText.setVisibility(View.GONE);  // Hide the message
+            noTasksContainer.setVisibility(View.GONE); // Hide the entire LinearLayout
         }
     }
 
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
             long taskTime = task.getTimestamp();
             String taskTitle = task.getTitle();
             if (taskTime > System.currentTimeMillis()) { // Only schedule alarms for future tasks
-                scheduleTaskReminder(this,taskTime, taskTitle);
+                scheduleTaskReminder(this, taskTime, taskTitle);
             }
         }
     }
@@ -143,9 +143,9 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
                 databaseHelper.deleteTask(task.getId());
                 adapter.removeTask(position);
 
-                // After removal, check if the list is empty and show/hide the message
+                // After removal, check if the list is empty and show/hide the noTasksContainer
                 if (adapter.getItemCount() == 0) {
-                    noTasksText.setVisibility(View.VISIBLE);  // Show "No activities programmed"
+                    noTasksContainer.setVisibility(View.VISIBLE); // Show the entire LinearLayout
                 }
             }
         };

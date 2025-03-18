@@ -4,15 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".MainActivity">
 
-
-
-    <!-- 50dp Spacer between AppBar and RecyclerView -->
-    <View
+    <!-- AppBarLayout for the Header -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="100dp"
+        android:background="@color/black">
+
+        <!-- Custom Header using LinearLayout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- Icon -->
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_task_icon"
+                app:tint="@color/teal_700" />
+
+            <TextView
+                android:id="@+id/header_text"
+                android:layout_width="138dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bangers"
+                android:text="TASK LIST"
+                android:textColor="@color/teal_700"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <!-- RecyclerView to display tasks -->
     <androidx.recyclerview.widget.RecyclerView
@@ -24,19 +51,38 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!-- TextView to show when there are no tasks -->
-    <TextView
-        android:id="@+id/noTasksText"
+    <!-- Container for icon and text -->
+    <LinearLayout
+        android:id="@+id/noTasksContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No activities \nprogrammed"
-        android:textSize="30dp"
         android:layout_gravity="center"
-        android:textColor="@color/teal_700"
-        android:textStyle="bold"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:gravity="center" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <!-- Icon -->
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_empty"
+            android:layout_marginBottom="5dp"
+            app:tint="@color/teal_700" /> <!-- Space between icon and text -->
+
+        <!-- Text -->
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Empty"
+            android:fontFamily="@font/bangers"
+            android:textColor="@color/teal_700"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="none"
+            android:padding="8dp"/>
+    </LinearLayout>
+
 
     <!-- Floating Action Button (FAB) to add a task -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -49,5 +95,4 @@
         app:backgroundTint="@color/teal_700"
         app:layout_anchor="@id/recyclerView"
         app:layout_anchorGravity="bottom|end" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
