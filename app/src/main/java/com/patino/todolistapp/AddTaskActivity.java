@@ -54,12 +54,12 @@ public class AddTaskActivity extends AppCompatActivity {
         long timestamp = selectedDateTime.getTimeInMillis();
 
         if (title.isEmpty() || description.isEmpty()) {
-            Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter both title and description", Toast.LENGTH_SHORT).show();
             return;
         }
 
         databaseHelper.addTask(title, description, timestamp);
-        Toast.makeText(this, "Tarea guardada", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Task saved", Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
     }
