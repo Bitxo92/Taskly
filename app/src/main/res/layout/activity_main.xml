@@ -67,7 +67,7 @@
             android:layout_height="64dp"
             android:src="@drawable/ic_empty"
             android:layout_marginBottom="5dp"
-            app:tint="@color/teal_700" /> <!-- Space between icon and text -->
+            app:tint="#393A3A" />
 
         <!-- Text -->
         <TextView
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:text="Empty"
             android:fontFamily="@font/bangers"
-            android:textColor="@color/teal_700"
+            android:textColor="#393A3A"
             android:textSize="48sp"
             android:textStyle="bold"
             android:maxLines="1"

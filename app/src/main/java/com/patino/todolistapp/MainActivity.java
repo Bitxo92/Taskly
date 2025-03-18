@@ -61,14 +61,14 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         // Enable swipe-to-delete feature
         enableSwipeToDelete();
 
-        // Request notification permission for Android 13 and above
+        // Request notification permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
             }
         }
 
-        // Check for exact alarm permission for Android 12 and above
+        // Check for exact alarm permission
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
