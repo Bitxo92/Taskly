@@ -28,7 +28,7 @@
         android:layout_centerInParent="true"
         app:tint="@color/teal_700" />
 
-    <!-- Tagline (initially hidden) -->
+    <!-- Tagline -->
     <TextView
         android:id="@+id/tagline"
         android:layout_width="wrap_content"

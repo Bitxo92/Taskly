@@ -35,8 +35,16 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
     private DatabaseHelper databaseHelper;
     private static final int ADD_TASK_REQUEST = 1;
     private static final int TASK_REMINDER_REQUEST_CODE = 1001;
-    private LinearLayout noTasksContainer; // Updated to handle the entire LinearLayout
+    private LinearLayout noTasksContainer;
 
+    /**
+     * Called when the activity is created.
+     *
+     * Initializes the activity's UI components, sets up the database helper, and loads tasks from the database.
+     * Also sets up the FloatingActionButton to add new tasks, enables swipe-to-delete feature, and requests necessary permissions.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, or null if the activity is being created for the first time.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,14 +85,23 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
             }
         }
     }
-
+    /**
+     * Called when an activity returns a result to this activity.
+     *
+     * Handles the result of the `AddTaskActivity` and refreshes the task list if a new task was added.
+     * Also schedules a reminder for the newly added task if the task time and title are provided in the intent.
+     *
+     * @param requestCode The request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
             loadTasks(); // Refresh the task list
 
-            // Check if the intent contains a task time (this assumes you're sending the task time from AddTaskActivity)
+            // Check if the intent contains a task time
             if (data != null) {
                 long taskTime = data.getLongExtra("taskTime", 0);
                 String taskTitle = data.getStringExtra("taskTitle");
@@ -96,7 +113,12 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
             }
         }
     }
-
+    /**
+     * Loads all tasks from the database and updates the RecyclerView with the task list.
+     *
+     * Retrieves all tasks from the database, sorts them by timestamp, and initializes the TaskAdapter with the task list.
+     * Sets the adapter to the RecyclerView and updates the visibility of the noTasksContainer based on the number of tasks.
+     */
     private void loadTasks() {
         List<Task> tasks = databaseHelper.getAllTasks();
         Collections.sort(tasks, (t1, t2) -> Long.compare(t1.getTimestamp(), t2.getTimestamp()));
@@ -113,6 +135,13 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         }
     }
 
+    /**
+     * Reschedules alarms for all tasks in the database.
+     *
+     * Retrieves all tasks from the database and iterates through them, scheduling a reminder for each task that has a future timestamp.
+     *
+     * Note: This method only schedules alarms for tasks with timestamps in the future.
+     */
     private void rescheduleAlarmsForAllTasks() {
         List<Task> tasks = databaseHelper.getAllTasks();
         for (Task task : tasks) {
@@ -123,7 +152,14 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
             }
         }
     }
-
+    /**
+     * Enables swipe-to-delete functionality for the RecyclerView.
+     *
+     * Creates an ItemTouchHelper callback that handles swipe gestures on the RecyclerView, allowing users to delete tasks by swiping left.
+     * When a task is swiped, the corresponding alarm is cancelled, the task is deleted from the database, and the adapter is updated.
+     *
+     * After deletion, checks if the list is empty and updates the visibility of the noTasksContainer accordingly.
+     */
     private void enableSwipeToDelete() {
         ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
@@ -151,8 +187,15 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         };
         new ItemTouchHelper(callback).attachToRecyclerView(recyclerView);
     }
-
-    // Method to cancel the task reminder alarm
+    /**
+     * Method to cancel the task reminder alarm
+     * Cancels a previously scheduled task reminder alarm.
+     *
+     * Retrieves the AlarmManager instance and creates a PendingIntent with the same request code used to schedule the alarm.
+     * Then, cancels the alarm using the AlarmManager instance.
+     *
+     * @param taskTime The timestamp of the task for which to cancel the alarm.
+     */
     public void cancelTaskReminder(long taskTime) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
@@ -174,7 +217,16 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         }
     }
 
-    // In MainActivity.java
+    /**
+     * Schedules a task reminder alarm to go off at a specified time.
+     *
+     * Calculates the reminder time to be 10 minutes before the task time and schedules an alarm using the AlarmManager instance.
+     * The alarm is set to trigger a broadcast to the TaskReminderReceiver class.
+     *
+     * @param context The context in which to schedule the alarm.
+     * @param taskTime The timestamp of the task for which to schedule the reminder.
+     * @param taskTitle The title of the task for which to schedule the reminder.
+     */
     @SuppressLint("ScheduleExactAlarm")
     public static void scheduleTaskReminder(Context context, long taskTime, String taskTitle) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -212,7 +264,13 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnTas
         }
     }
 
-    // Implement the long-click listener
+    /**
+     * Called when a task is long-clicked in the RecyclerView.
+     *
+     * Opens the EditTaskActivity and passes the task data as extras in the intent.
+     *
+     * @param task The task that was long-clicked.
+     */
     @Override
     public void onTaskLongClick(Task task) {
         // Open EditTaskActivity and pass the task data

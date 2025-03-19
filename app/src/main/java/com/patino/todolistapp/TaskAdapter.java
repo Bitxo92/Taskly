@@ -23,13 +23,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         void onTaskLongClick(Task task);
     }
 
-    // Constructor with long-click listener
+    // Class Constructor
     public TaskAdapter(List<Task> taskList, DatabaseHelper databaseHelper, OnTaskLongClickListener longClickListener) {
         this.taskList = taskList;
         this.databaseHelper = databaseHelper;
         this.longClickListener = longClickListener; // Initialize the listener
     }
 
+    /**
+     * Creates a new TaskViewHolder instance.
+     *
+     * Inflates the task item layout and returns a new TaskViewHolder instance.
+     *
+     * @param parent The ViewGroup into which the new view will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new view.
+     * @return A new TaskViewHolder instance.
+     */
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,6 +47,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return new TaskViewHolder(view);
     }
 
+    /**
+     * Binds the TaskViewHolder instance to the task data at the specified position.
+     *
+     * Retrieves the task data from the taskList and updates the views in the TaskViewHolder instance.
+     *
+     * Also, updates the visibility and styles of the views based on the task's timestamp and the current time.
+     *
+     * Sets a long-click listener on the itemView to handle long clicks on the task item.
+     *
+     * @param holder The TaskViewHolder instance to bind the data to.
+     * @param position The position of the task data in the taskList.
+     */
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = taskList.get(position);
@@ -85,26 +106,53 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         });
     }
 
+    /**
+     * Returns the number of items in the taskList.
+     *
+     * @return The number of items in the taskList.
+     */
     @Override
     public int getItemCount() {
         return taskList.size();
     }
 
-    // Method to get the task at a specific position
+    /**
+     * Retrieves the Task at the specified position in the task list.
+     *
+     * @param position The position of the Task to retrieve.
+     * @return The Task at the specified position.
+     */
     public Task getTaskAt(int position) {
         return taskList.get(position);
     }
 
-    // Method to remove a task from the list
+    /**
+     * Removes the Task at the specified position from the task list.
+     *
+     * Notifies the adapter that an item has been removed, triggering a layout update.
+     *
+     * @param position The position of the Task to remove.
+     */
     public void removeTask(int position) {
         taskList.remove(position);
         notifyItemRemoved(position);
     }
-
+    /**
+     * A ViewHolder class that represents a single task item in the RecyclerView.
+     *
+     * Holds the views that will be used to display the task data.
+     */
     static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView title, description, dateTime;
         ImageView iconWarning, iconClose,iconOntime;
 
+        /**
+         * Constructs a new TaskViewHolder instance.
+         *
+         * Initializes the views that will be used to display the task data.
+         *
+         * @param itemView The view that will be used to display the task data.
+         */
         public TaskViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.task_title);

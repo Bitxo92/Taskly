@@ -20,6 +20,14 @@ public class EditTaskActivity extends AppCompatActivity {
     private Calendar selectedDateTime = Calendar.getInstance();
     private int taskId;
 
+    /**
+     * Called when the activity is created.
+     *
+     * Initializes the views, retrieves task data from the intent, and pre-fills the task data.
+     * Sets up the date/time picker and save button.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +61,12 @@ public class EditTaskActivity extends AppCompatActivity {
         buttonSave.setOnClickListener(v -> updateTask());
     }
 
+    /**
+     * Displays a date and time picker dialog to select a date and time.
+     *
+     * Uses a DatePickerDialog to select the date, and then a TimePickerDialog to select the time.
+     * Updates the selected date and time in the textViewDateTime.
+     */
     private void pickDateTime() {
         DatePickerDialog datePicker = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             selectedDateTime.set(year, month, dayOfMonth);
@@ -66,6 +80,18 @@ public class EditTaskActivity extends AppCompatActivity {
         datePicker.show();
     }
 
+    /**
+     * Updates a task with the provided title, description, and timestamp.
+     *
+     * Retrieves the title and description from the editTextTitle and editTextDescription views,
+     * and the timestamp from the selectedDateTime object.
+     *
+     * Validates that the title and description are not empty before updating the task.
+     *
+     * Updates the task in the database using the databaseHelper object.
+     *
+     * Displays a toast message to indicate that the task has been updated, and returns a result code to the calling activity.
+     */
     private void updateTask() {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();

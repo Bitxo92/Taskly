@@ -17,10 +17,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_DESCRIPTION = "description";
     private static final String COLUMN_TIMESTAMP = "timestamp";
 
+   // Class Constructor
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Called when the database is created for the first time.
+     *
+     * Creates the tasks table with the necessary columns.
+     *
+     * @param db The SQLiteDatabase instance to create the table in.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_TASKS + "("
@@ -31,12 +39,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE);
     }
 
+    /**
+     * Called when the database needs to be upgraded to a new version.
+     *
+     * Drops the existing tasks table and recreates it using the onCreate method.
+     *
+     * @param db The SQLiteDatabase instance to upgrade.
+     * @param oldVersion The old version of the database.
+     * @param newVersion The new version of the database.
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS);
         onCreate(db);
     }
 
+    /**
+     * Adds a new task to the database.
+     *
+     * Inserts a new row into the tasks table with the provided title, description, and timestamp.
+     *
+     * @param title The title of the task to add.
+     * @param description The description of the task to add.
+     * @param timestamp The timestamp of the task to add.
+     */
     public void addTask(String title, String description, long timestamp) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -47,6 +73,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Retrieves all tasks from the database.
+     *
+     * Queries the tasks table and returns a list of Task objects, sorted by timestamp in ascending order.
+     *
+     * @return A list of all tasks in the database.
+     */
     public List<Task> getAllTasks() {
         List<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -68,13 +101,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return taskList;
     }
-
+    /**
+     * Deletes a task from the database by its ID.
+     *
+     * Removes the task with the specified ID from the tasks table.
+     *
+     * @param id The ID of the task to delete.
+     */
     public void deleteTask(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TASKS, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
         db.close();
     }
 
+    /**
+     * Updates a task in the database.
+     *
+     * Updates the task with the specified ID with the provided title, description, and timestamp.
+     *
+     * @param id The ID of the task to update.
+     * @param title The new title of the task.
+     * @param description The new description of the task.
+     * @param timestamp The new timestamp of the task.
+     */
     public void updateTask(int id, String title, String description, long timestamp) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

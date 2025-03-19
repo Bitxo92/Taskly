@@ -12,6 +12,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
+    /**
+     * Called when the activity is created.
+     *
+     * Initializes the views, loads animations, and sets up a sequence of animations to display the splash screen.
+     *
+     * The sequence consists of three steps:
+     * 1. Fade in the app name and icon.
+     * 2. Fade in the tagline after a 2-second delay.
+     * 3. Transition to the MainActivity after a 3-second delay.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

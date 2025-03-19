@@ -6,13 +6,14 @@ public class Task {
     private String description;
     private long timestamp;
 
+    //POJO Class Constructor
     public Task(int id, String title, String description, long timestamp) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.timestamp = timestamp;
     }
-
+    //·········································GETTERS·················································
     public int getId() {
         return id;
     }

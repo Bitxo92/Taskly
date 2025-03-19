@@ -19,6 +19,13 @@ public class AddTaskActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private Calendar selectedDateTime = Calendar.getInstance();
 
+    /**
+     * Called when the activity is created.
+     *
+     * Initializes the activity's UI components, sets up event listeners, and establishes a connection to the database.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, or null if the activity is being created for the first time.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +41,12 @@ public class AddTaskActivity extends AppCompatActivity {
         buttonPickDateTime.setOnClickListener(v -> pickDateTime());
         buttonSave.setOnClickListener(v -> saveTask());
     }
-
+    /**
+     * Displays a date and time picker dialog to allow the user to select a date and time.
+     *
+     * When a date is selected, a time picker dialog is displayed to allow the user to select a time.
+     * The selected date and time are then displayed in the `textViewDateTime` field.
+     */
     private void pickDateTime() {
         DatePickerDialog datePicker = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             selectedDateTime.set(year, month, dayOfMonth);
@@ -47,7 +59,15 @@ public class AddTaskActivity extends AppCompatActivity {
         }, selectedDateTime.get(Calendar.YEAR), selectedDateTime.get(Calendar.MONTH), selectedDateTime.get(Calendar.DAY_OF_MONTH));
         datePicker.show();
     }
-
+    /**
+     * Saves a new task to the database.
+     *
+     * Retrieves the title and description from the `editTextTitle` and `editTextDescription` fields, respectively.
+     * If either field is empty, displays an error message and returns without saving the task.
+     * Otherwise, adds the task to the database with the selected date and time, and displays a success message.
+     *
+     * After saving the task, sets the activity result to `RESULT_OK` and finishes the activity.
+     */
     private void saveTask() {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
