@@ -4,6 +4,7 @@
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 
+
 ## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
@@ -16,6 +17,7 @@
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
+- [Screenshots](#screenshots)
 - [License](#license)
 
 ## Features
@@ -43,7 +45,7 @@
 ### Setup Instructions
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/taskly-android.git
+   git clone https://github.com/Bitxo92/taskly.git
    cd taskly-android
    ```
 2. Import into Android Studio:
@@ -224,6 +226,12 @@ public static void scheduleTaskReminder(Context context, long taskTime, String t
    git push origin feature/new-feature
    ```
 5. Open a pull request
+
+## Screenshots
+![image](https://github.com/user-attachments/assets/32428cbc-d0e3-4f08-9049-b139d9c375b9)
+![image](https://github.com/user-attachments/assets/aa1b60a9-30e2-4b04-92d2-9b3ba1d760b1)
+![image](https://github.com/user-attachments/assets/cb5de5b3-ff92-4ed4-aedf-ca0ef4d42850)
+
 
 ## License
 GNU License
