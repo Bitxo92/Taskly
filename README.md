@@ -46,7 +46,7 @@
 1. Clone the repository:
    ```sh
    git clone https://github.com/Bitxo92/taskly.git
-   cd taskly-android
+   cd taskly
    ```
 2. Import into Android Studio:
    - Select "Open an Existing Project"
