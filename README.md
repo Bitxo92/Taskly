@@ -233,5 +233,27 @@ public static void scheduleTaskReminder(Context context, long taskTime, String t
 ![image](https://github.com/user-attachments/assets/cb5de5b3-ff92-4ed4-aedf-ca0ef4d42850)
 
 
-## License
-GNU License
+## License 📜
+
+This project is licensed under the **GNU General Public License v3.0** (GPL-3.0). 
+
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+### Key Permissions:
+- ✅ Commercial use
+- ✅ Modification
+- ✅ Distribution
+- ✅ Patent use
+- ✅ Private use
+
+### Main Requirements:
+- ❗ License and copyright notice must be included
+- ❗ Same license must be used for derivative works
+- ❗ State changes made to original code
+- ❗ Disclose source code
+
+### Limitations:
+- ⚠️ No liability
+- ⚠️ No warranty
+
+For full license terms, see [LICENSE](LICENSE) file or read the [GNU GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) official documentation.
