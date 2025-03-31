@@ -233,7 +233,7 @@ public static void scheduleTaskReminder(Context context, long taskTime, String t
 ![image](https://github.com/user-attachments/assets/cb5de5b3-ff92-4ed4-aedf-ca0ef4d42850)
 
 
-## License 📜
+## License
 
 This project is licensed under the **GNU General Public License v3.0** (GPL-3.0). 
 
